@@ -1,0 +1,30 @@
+var int x, y, z;
+x = 4;
+y = 10;
+
+if 3 < x then
+    if y < 15 then
+        var int w;
+        w = x + y;
+        z = 2024
+    else
+        print(x - y)
+    endif
+else
+    z = x * y
+endif;
+
+if 3 < x then
+    if y < 15 then
+        var int a, b;
+        a = x + y;
+        b = a * 2
+    else
+        print(x - y)
+    endif
+else
+    z = x * y
+endif;
+
+print(z)
+
