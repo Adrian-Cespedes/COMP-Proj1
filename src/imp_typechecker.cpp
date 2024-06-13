@@ -41,7 +41,7 @@ void ImpTypeChecker::visit(VarDecList* decs) {
 // Solo se aceptan ints
 void ImpTypeChecker::visit(VarDec* vd) {
     ImpType type = ImpValue::get_basic_type(vd->type);
-    if (type != TINT) {
+    if (type == NOTYPE) {
         cout << "Error: unknown type " << vd->type << endl;
         exit(1);
     }
@@ -169,5 +169,5 @@ ImpType ImpTypeChecker::visit(CondExp* e) {
         exit(0);
     }
 
-    return NOTYPE;
+    return ttype;
 }
