@@ -103,6 +103,19 @@ void ImpInterpreter::visit(WhileStatement* s) {
     return;
 }
 
+void ImpInterpreter::visit(DoWhileStatement* s) {
+    ImpValue v = s->cond->accept(this);
+    if (v.type != TBOOL) {
+        cout << "Type error en DoWhile: esperaba bool en condicional" << endl;
+        exit(0);
+    }
+    do {
+        s->body->accept(this);
+        v = s->cond->accept(this);
+    } while (v.bool_value);
+    return;
+}
+
 ImpValue ImpInterpreter::visit(BinaryExp* e) {
     ImpValue result;
     ImpValue v1 = e->left->accept(this);

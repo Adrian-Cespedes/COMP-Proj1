@@ -1,0 +1,84 @@
+alloc 5
+push 4
+store 1
+push 10
+store 2
+push 3
+load 1
+lt
+jmpz L0
+load 2
+push 15
+lt
+jmpz L2
+load 1
+load 2
+add
+store 4
+load 4
+push 2
+mul
+store 5
+goto L3
+L2: skip
+load 1
+load 2
+sub
+print
+L3: skip
+goto L1
+L0: skip
+load 1
+load 2
+mul
+store 3
+L1: skip
+push 3
+load 1
+lt
+jmpz L4
+load 2
+push 15
+lt
+jmpz L6
+load 1
+load 2
+add
+store 4
+push 2024
+store 3
+L8: skip
+push 1234
+print
+load 4
+push 10
+lt
+jmpn L8
+L9: skip
+push 5678
+print
+load 3
+push 1
+sub
+store 3
+push 2014
+load 3
+lt
+jmpn L9
+goto L7
+L6: skip
+load 1
+load 2
+sub
+print
+L7: skip
+goto L5
+L4: skip
+load 1
+load 2
+mul
+store 3
+L5: skip
+load 3
+print
+halt

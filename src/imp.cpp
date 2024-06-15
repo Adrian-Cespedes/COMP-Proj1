@@ -104,6 +104,7 @@ PrintStatement::PrintStatement(Exp* e) : e(e) {}
 IfStatement::IfStatement(Exp* c, Body* tb, Body* fb)
     : cond(c), tbody(tb), fbody(fb) {}
 WhileStatement::WhileStatement(Exp* c, Body* b) : cond(c), body(b) {}
+DoWhileStatement::DoWhileStatement(Exp* c, Body* b) : cond(c), body(b) {}
 
 StatementList::StatementList() : slist() {}
 VarDec::VarDec(string type, list<string> vars) : type(type), vars(vars) {}
@@ -124,6 +125,10 @@ IfStatement::~IfStatement() {
     delete cond;
 }
 WhileStatement::~WhileStatement() {
+    delete body;
+    delete cond;
+}
+DoWhileStatement::~DoWhileStatement() {
     delete body;
     delete cond;
 }
@@ -150,6 +155,9 @@ void IfStatement::accept(ImpVisitor* v) {
     return v->visit(this);
 }
 void WhileStatement::accept(ImpVisitor* v) {
+    return v->visit(this);
+}
+void DoWhileStatement::accept(ImpVisitor* v) {
     return v->visit(this);
 }
 void StatementList::add(Stm* s) {
@@ -187,6 +195,9 @@ void IfStatement::accept(ImpValueVisitor* v) {
 void WhileStatement::accept(ImpValueVisitor* v) {
     return v->visit(this);
 }
+void DoWhileStatement::accept(ImpValueVisitor* v) {
+    return v->visit(this);
+}
 void StatementList::accept(ImpValueVisitor* v) {
     return v->visit(this);
 }
@@ -214,6 +225,9 @@ void IfStatement::accept(TypeVisitor* v) {
     return v->visit(this);
 }
 void WhileStatement::accept(TypeVisitor* v) {
+    return v->visit(this);
+}
+void DoWhileStatement::accept(TypeVisitor* v) {
     return v->visit(this);
 }
 void StatementList::accept(TypeVisitor* v) {

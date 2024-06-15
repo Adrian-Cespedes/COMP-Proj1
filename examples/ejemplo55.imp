@@ -18,7 +18,14 @@ if 3 < x then
     if y < 15 then
         var int w;
         w = x + y;
-        z = 2024
+        z = 2024;
+        do
+            print(1234)
+        while w < 10;
+        do
+            print(5678);
+            z = z - 1
+        while 2014 < z
     else
         print(x - y)
     endif

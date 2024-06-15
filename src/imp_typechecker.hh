@@ -28,6 +28,7 @@ class ImpTypeChecker : public TypeVisitor {
     void visit(PrintStatement*);
     void visit(IfStatement*);
     void visit(WhileStatement*);
+    void visit(DoWhileStatement*);
 
     int get_max_mem() { return max_mem; }
 

@@ -24,6 +24,7 @@ class ImpInterpreter : public ImpValueVisitor {
     void visit(PrintStatement*);
     void visit(IfStatement*);
     void visit(WhileStatement*);
+    void visit(DoWhileStatement*);
 
     ImpValue visit(BinaryExp* e);
     ImpValue visit(NumberExp* e);
