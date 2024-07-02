@@ -2,15 +2,15 @@
 
 ImpValue::ImpValue():type(NOTYPE) { }
 
-ImpType ImpValue::get_basic_type(string s) {
-  ImpType tt;
+ImpVType ImpValue::get_basic_type(string s) {
+  ImpVType tt;
   if (s.compare("int")==0) tt = TINT;
   else if (s.compare("bool")==0) tt = TBOOL;
   else tt = NOTYPE; 
   return tt;
 }
 
-void ImpValue::set_default_value(ImpType tt) {
+void ImpValue::set_default_value(ImpVType tt) {
   type = tt;
   if (tt == TINT) {
     int_value = 0;

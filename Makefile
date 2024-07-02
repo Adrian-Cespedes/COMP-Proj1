@@ -4,7 +4,7 @@ SRC_DIR = src
 EXMPL_DIR = examples
 BIN_DIR = bin
 
-SRC_IMP = $(SRC_DIR)/imp_test.cpp $(SRC_DIR)/imp.cpp $(SRC_DIR)/imp_parser.cpp $(SRC_DIR)/imp_value.cpp $(SRC_DIR)/imp_printer.cpp $(SRC_DIR)/imp_interpreter.cpp
+SRC_IMP= $(SRC_DIR)/test_imp_fun.cpp $(SRC_DIR)/imp.cpp $(SRC_DIR)/imp_parser.cpp $(SRC_DIR)/imp_printer.cpp $(SRC_DIR)/imp_interpreter.cpp $(SRC_DIR)/imp_value.cpp $(SRC_DIR)/imp_typechecker.cpp $(SRC_DIR)/imp_type.cpp $(SRC_DIR)/imp_codegen.cpp
 SRC_COMP = $(SRC_DIR)/imp_compiler.cpp $(SRC_DIR)/imp.cpp $(SRC_DIR)/imp_parser.cpp $(SRC_DIR)/imp_printer.cpp $(SRC_DIR)/imp_typechecker.cpp $(SRC_DIR)/imp_value.cpp $(SRC_DIR)/imp_interpreter.cpp $(SRC_DIR)/imp_codegen.cpp
 SRC_SVM = $(SRC_DIR)/svm_run.cpp $(SRC_DIR)/svm_parser.cpp $(SRC_DIR)/svm.cpp
 

@@ -26,9 +26,7 @@ private:
     return -1;
   }
 public:
-  Environment() {
-    // cout << "num ribs: " << ribs.size() << endl; -- 0
-  }
+  Environment() {}
   void clear() {
     ribs.clear();
   }
@@ -36,14 +34,17 @@ public:
     unordered_map<string, T> r;
     ribs.push_back(r);
   }
-  // Agrega variable a ultimo nivel.
   void add_var(string var, T value) {
-    if (ribs.size() < 1) {
-      cout << "Error Evironment::add_var: Numero de niveles es 0" << endl;
+    if (ribs.size() == 0) {
+      cout << "Environment sin niveles: no se pueden agregar variables" << endl;
       exit(0);
     }
     ribs.back()[var] = value;
   }
+  void add_var(string var) {
+    ribs.back()[var] = 0;
+  }
+  
   bool remove_level() {
     if (ribs.size()>0) {
       ribs.pop_back();
@@ -53,7 +54,6 @@ public:
   } 
   bool update(string x, T v) {
     int idx = search_rib(x);
-    //cout << "update: " << x << " idx = " << idx << endl; 
     if (idx < 0) return false;
     ribs[idx][x] = v;
     return true;
@@ -65,10 +65,7 @@ public:
   T lookup(string x) {
     T a;
     int idx = search_rib(x);
-    if (idx < 0) {
-      cout << "\nError lookup: No se encontro variable " << x << endl;
-      exit(0);
-    }
+    if (idx < 0) return a;
     else return ribs[idx][x];
   }
   bool lookup(string x, T& v) {
@@ -77,7 +74,6 @@ public:
     v = ribs[idx][x];
     return true;
   }
-
 };
 
 #endif
