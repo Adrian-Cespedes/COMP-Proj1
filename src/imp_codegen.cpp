@@ -99,8 +99,10 @@ void ImpCodeGen::visit(VarDec* vd) {
     list<string>::iterator it;
     for (it = vd->vars.begin(); it != vd->vars.end(); ++it) {
         current_dir++;
+        cout << "current_dir: " << current_dir << " XD" << endl;
         VarEntry ventry;
         ventry.dir = current_dir;
+        cout << "current_dir pos: " << ventry.dir << " XD\n" << endl;
         ventry.is_global = process_global;
         direcciones.add_var(*it, ventry);
     }
@@ -130,9 +132,8 @@ void ImpCodeGen::visit(FunDec* fd) {
     }
 
     // agregar direccion de return
-    // ventry.dir = current_dir;
     ventry.dir = -(m + 3);
-    ventry.is_global = false;
+    ventry.is_global = process_global;
     direcciones.add_var("return", ventry);
 
     // generar codigo para fundec
@@ -140,10 +141,13 @@ void ImpCodeGen::visit(FunDec* fd) {
     num_params = m;
 
     codegen(get_flabel(fd->fname), "skip");
-    codegen(nolabel, "enter", m + fentry.mem_locals);
+    codegen(nolabel, "enter", fentry.max_stack + fentry.mem_locals);
     codegen(nolabel, "alloc", fentry.mem_locals);
     // codegen(nolabel, "mark");
 
+    cout << fd->fname << " " << current_dir << endl;
+
+    current_dir = 0;
     fd->body->accept(this);
     //  -- sacar comentarios para generar codigo del cuerpo
 
@@ -162,7 +166,6 @@ void ImpCodeGen::visit(AssignStatement* s) {
     s->rhs->accept(this);
     VarEntry ventry = direcciones.lookup(s->id);
     // generar codigo store/storer
-    // codegen(nolabel, "store", 100);  // modificar 100 global vs local
 
     if (ventry.is_global)
         codegen(nolabel, "store", ventry.dir);
@@ -214,8 +217,13 @@ void ImpCodeGen::visit(ReturnStatement* s) {
 
     // codegen(nolabel, "loadr", direcciones.lookup("return").dir);
     // codegen(nolabel, "storer", -(num_params + 3));
-    codegen(nolabel, "loadr", num_params);
-    codegen(nolabel, "storer", direcciones.lookup("return").dir);
+
+    if (s->e != NULL) {
+        s->e->accept(this);
+        // codegen(nolabel, "loadr", num_params);
+        codegen(nolabel, "storer", direcciones.lookup("return").dir);
+    }
+
     codegen(nolabel, "return", num_params + 3);
     return;
 }
@@ -298,7 +306,17 @@ int ImpCodeGen::visit(FCallExp* e) {
     ImpType ftype = fentry.ftype;
 
     // agregar codigo
+    if (ftype.ttype != ImpType::VOID)
+        codegen(nolabel, "alloc", 1);
 
+    list<Exp*>::iterator it;
+
+    for (it = e->args.begin(); it != e->args.end(); ++it) {
+        (*it)->accept(this);
+    }
+
+    codegen(nolabel, "mark");
+    codegen(nolabel, "pusha", get_flabel(e->fname));
     codegen(nolabel, "call");
     return 0;
 }

@@ -12,13 +12,13 @@ ImpTypeChecker::ImpTypeChecker()
 
 // Metodos usados para el analsis de altura maxima de pila
 void ImpTypeChecker::sp_incr(int n) {
-    sp++;
+    sp += n;
     if (sp > max_sp)
         max_sp = sp;
 }
 
 void ImpTypeChecker::sp_decr(int n) {
-    sp--;
+    sp -= n;
     if (sp < 0) {
         cout << "stack less than 0" << endl;
         exit(0);
@@ -171,13 +171,13 @@ void ImpTypeChecker::visit(AssignStatement* s) {
         exit(0);
     }
     // que hacer con sp?
+    sp_decr(1);
     ImpType var_type = env.lookup(s->id);
     if (!type.match(var_type)) {
         cout << "Tipo incorrecto en Assign a " << s->id << endl;
         exit(0);
     }
 
-    sp_incr(1);
     return;
 }
 
@@ -193,6 +193,7 @@ void ImpTypeChecker::visit(IfStatement* s) {
         cout << "Expresion conditional en IF debe de ser bool" << endl;
         exit(0);
     }
+    sp_decr(1);
     // que hacer con sp?
     s->tbody->accept(this);
     if (s->fbody != NULL)
@@ -207,6 +208,7 @@ void ImpTypeChecker::visit(WhileStatement* s) {
         exit(0);
     }
     // que hacer con sp?
+    sp_decr(1);
     s->body->accept(this);
     return;
 }
@@ -214,8 +216,11 @@ void ImpTypeChecker::visit(WhileStatement* s) {
 void ImpTypeChecker::visit(ReturnStatement* s) {
     ImpType rtype = env.lookup("return");
     ImpType etype;
-    if (s->e != NULL)
+    if (s->e != NULL) {
         etype = s->e->accept(this);
+        sp_decr(1);
+
+    }
     // que hacer con sp?
     else
         etype = voidtype;
@@ -223,7 +228,6 @@ void ImpTypeChecker::visit(ReturnStatement* s) {
         cout << "Return type mismatch: " << rtype << "<->" << etype << endl;
         exit(0);
     }
-    sp_incr(1);
     return;
 }
 
@@ -250,7 +254,7 @@ ImpType ImpTypeChecker::visit(BinaryExp* e) {
             break;
     }
     // que hacer con sp?
-    sp_decr(2);
+    sp_decr(1);
     return result;
 }
 
@@ -288,14 +292,12 @@ ImpType ImpTypeChecker::visit(CondExp* e) {
     }
     // que hacer con sp?
     ImpType ttype = e->etrue->accept(this);
-    // sp_incr(1);
+    sp_decr(1);
     // que hacer con sp?
     if (!ttype.match(e->efalse->accept(this))) {
         cout << "Tipos en ifexp deben de ser iguales" << endl;
         exit(0);
     }
-    // sp_incr(1);
-    sp_decr(1);
     return ttype;
 }
 
@@ -309,6 +311,9 @@ ImpType ImpTypeChecker::visit(FCallExp* e) {
         cout << "(Function call): " << e->fname << " no es una funcion" << endl;
         exit(0);
     }
+
+    if (funtype.types[-1] != ImpType::VOID)
+        sp_incr(1);
 
     // check args
     int num_fun_args = funtype.types.size() - 1;
@@ -339,7 +344,7 @@ ImpType ImpTypeChecker::visit(FCallExp* e) {
     }
 
     // sp_incr(num_fun_args);
-    sp_decr(num_fun_args - 1);
+    sp_decr(num_fun_args);
 
     return rtype;
 }
