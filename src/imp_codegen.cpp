@@ -260,7 +260,6 @@ void ImpCodeGen::visit(ForStatement* s) {
     direcciones.add_level();
 
     // memoria para el iterador y el tope
-    codegen(nolabel, "alloc", 2);
     current_dir += 2;
 
     VarEntry iter_entry;
@@ -299,13 +298,10 @@ void ImpCodeGen::visit(ForStatement* s) {
 
     codegen(nolabel, "goto", l1);
 
-    // fin del bucle y limpiar memoria
+    // fin del bucle
     codegen(l2, "skip");
-    codegen(nolabel, "pop");
-    codegen(nolabel, "pop");
 
     direcciones.remove_level();
-
     current_dir = temp_dir;
     return;
 }

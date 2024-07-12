@@ -277,8 +277,16 @@ void ImpTypeChecker::visit(FCallStatement* s) {
 }
 
 void ImpTypeChecker::visit(ForStatement* s) {
+    int temp_dir = dir;
     env.add_level();
+
+    string end_id = "_" + s->id + "_end";
     env.add_var(s->id, inttype);
+    env.add_var(end_id, inttype);
+
+    dir += 2;
+    if (dir > max_dir)
+        max_dir = dir;
 
     ImpType type_start = s->start->accept(this);
     ImpType type_end = s->end->accept(this);
@@ -290,7 +298,7 @@ void ImpTypeChecker::visit(ForStatement* s) {
     s->body->accept(this);
 
     env.remove_level();
-
+    dir = temp_dir;
     return;
 } 
 

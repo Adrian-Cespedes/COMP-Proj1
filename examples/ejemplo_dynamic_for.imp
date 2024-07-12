@@ -1,0 +1,11 @@
+fun void main()
+    var int a, top;
+    a = 1;
+    top = 10;
+    for i in (1, top) do
+        a = a * i;
+        top = top / 2
+    endfor;
+    print(a);
+    return ()
+endfun

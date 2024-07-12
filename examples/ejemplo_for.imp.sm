@@ -20,7 +20,6 @@ add
 loadr 3
 add
 print
-alloc 2
 push  0
 storer 4
 push  10
@@ -48,9 +47,6 @@ add
 storer 4
 goto L0
 L1: skip
-pop
-pop
-alloc 2
 loadr 2
 storer 4
 loadr 1
@@ -68,8 +64,6 @@ add
 storer 4
 goto L2
 L3: skip
-pop
-pop
 loadr 3
 print
 return 3
