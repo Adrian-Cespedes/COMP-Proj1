@@ -1,0 +1,17 @@
+fun void main()
+    var int x, y, z;
+    x = 99;
+    y = 100;
+    z = 101;
+    print(x+y+z);
+    for z in (0, 10) do
+        var int xd, nt, asdf;
+        xd = 0;
+        asdf = 12345;
+        print(asdf);
+        nt = z + xd;
+        print(nt)
+    endfor;
+    print(z);
+    return ()
+endfun
