@@ -99,10 +99,10 @@ void ImpCodeGen::visit(VarDec* vd) {
     list<string>::iterator it;
     for (it = vd->vars.begin(); it != vd->vars.end(); ++it) {
         current_dir++;
-        cout << "current_dir: " << current_dir << " XD" << endl;
+        // cout << "current_dir: " << current_dir << endl;
         VarEntry ventry;
         ventry.dir = current_dir;
-        cout << "current_dir pos: " << ventry.dir << " XD\n" << endl;
+        // cout << "current_dir pos: " << ventry.dir << endl;
         ventry.is_global = process_global;
         direcciones.add_var(*it, ventry);
     }
@@ -143,9 +143,8 @@ void ImpCodeGen::visit(FunDec* fd) {
     codegen(get_flabel(fd->fname), "skip");
     codegen(nolabel, "enter", fentry.max_stack + fentry.mem_locals);
     codegen(nolabel, "alloc", fentry.mem_locals);
-    // codegen(nolabel, "mark");
 
-    cout << fd->fname << " " << current_dir << endl;
+    // cout << fd->fname << " " << current_dir << endl;
 
     current_dir = 0;
     fd->body->accept(this);
@@ -225,6 +224,31 @@ void ImpCodeGen::visit(ReturnStatement* s) {
     }
 
     codegen(nolabel, "return", num_params + 3);
+    return;
+}
+
+void ImpCodeGen::visit(FCallStatement* s) {
+    FEntry fentry = analysis->ftable.lookup(s->fname);
+    ImpType ftype = fentry.ftype;
+
+    // agregar codigo
+    if (ftype.ttype != ImpType::VOID)
+        codegen(nolabel, "alloc", 1);
+
+    list<Exp*>::iterator it;
+
+    for (it = s->args.begin(); it != s->args.end(); ++it) {
+        (*it)->accept(this);
+    }
+
+    codegen(nolabel, "mark");
+    codegen(nolabel, "pusha", get_flabel(s->fname));
+    codegen(nolabel, "call");
+
+    // descartar el valor de retorno
+    if (ftype.ttype != ImpType::VOID)
+        codegen(nolabel, "pop");
+
     return;
 }
 

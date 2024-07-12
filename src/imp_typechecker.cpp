@@ -231,6 +231,51 @@ void ImpTypeChecker::visit(ReturnStatement* s) {
     return;
 }
 
+void ImpTypeChecker::visit(FCallStatement* s) {
+    if (!env.check(s->fname)) {
+        cout << "Funcion " << s->fname << " no definida" << endl;
+        exit(0);
+    }
+    ImpType funtype = env.lookup(s->fname);
+    if (funtype.ttype != ImpType::FUN) {
+        cout << "No es una funcion" << endl;
+        exit(0);
+    }
+
+    if (funtype.ttype != ImpType::VOID)
+        sp_incr(1);
+
+    int num_fun_args = funtype.types.size() - 1;
+    int num_fcall_args = s->args.size();
+
+    if (num_fun_args != num_fcall_args) {
+        cout << "Numero de argumentos no corresponde a declaracion de: "
+             << s->fname << endl;
+        exit(0);
+    }
+
+
+    list<Exp*>::iterator it;
+    int i;
+
+    for (it = s->args.begin(), i = 0; it != s->args.end(); ++it, ++i) {
+        ImpType argtype = (*it)->accept(this);
+        ImpType paramtype;
+        paramtype.set_basic_type(funtype.types[i]);
+        if (!argtype.match(paramtype)) {
+            cout << "Tipo de argumento incorrecto" << endl;
+            exit(0);
+        }
+    }
+
+    sp_decr(num_fun_args);
+
+    if (funtype.ttype != ImpType::VOID)
+        sp_decr(1);
+
+    return;
+}
+
 ImpType ImpTypeChecker::visit(BinaryExp* e) {
     ImpType t1 = e->left->accept(this);
     ImpType t2 = e->right->accept(this);

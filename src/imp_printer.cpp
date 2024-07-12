@@ -114,6 +114,19 @@ void ImpPrinter::visit(ReturnStatement* s) {
   return;
 }
 
+void ImpPrinter::visit(FCallStatement* s) {
+  cout << s->fname << "(";
+  list<Exp*>::iterator it;
+  bool first = true;
+  for (it = s->args.begin(); it != s->args.end(); ++it) {
+    if (!first) cout << ", ";
+    first = false;
+    (*it)->accept(this);
+  }
+  cout << ")";
+  return;
+}
+
 // Expresiones
 
 int ImpPrinter::visit(BinaryExp* e) {

@@ -349,12 +349,23 @@ Stm* Parser::parseStatement() {
     Body *tb, *fb;
     if (match(Token::ID)) {
         string lex = previous->lexema;
-        if (!match(Token::ASSIGN)) {
-            cout << "Error: esperaba =" << endl;
+        if (match(Token::ASSIGN)) {
+            s = new AssignStatement(lex, parseCExp());
+        } else if (match(Token::LPAREN)) {
+            list<Exp*> args;
+            if (!check(Token::RPAREN)) {
+                args.push_back(parseCExp());
+                while (match(Token::COMMA)) {
+                    args.push_back(parseCExp());
+                }
+            }
+            if (!match(Token::RPAREN))
+                parserError("Expecting rparen");
+            s = new FCallStatement(lex, args);
+        } else {
+            cout << "Error: id inesperado en statement" << endl;
             exit(0);
         }
-        s = new AssignStatement(lex, parseCExp());
-        // memoria_update(lex, v);
     } else if (match(Token::PRINT)) {
         if (!match(Token::LPAREN)) {
             cout << "Error: esperaba ( " << endl;
@@ -394,7 +405,6 @@ Stm* Parser::parseStatement() {
         if (!match(Token::RPAREN))
             parserError("Esperaba 'rparen'");
         s = new ReturnStatement(e);
-
     } else {
         cout << "No se encontro Statement" << endl;
         exit(0);
