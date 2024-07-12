@@ -127,6 +127,17 @@ void ImpPrinter::visit(FCallStatement* s) {
   return;
 }
 
+void ImpPrinter::visit(ForStatement* s) {
+  cout << "for " << s->id << " in (";
+  s->start->accept(this);
+  cout << ", ";
+  s->end->accept(this);
+  cout << ") do" << endl;
+  s->body->accept(this);
+  cout << "endfor";
+  return;
+}
+
 // Expresiones
 
 int ImpPrinter::visit(BinaryExp* e) {

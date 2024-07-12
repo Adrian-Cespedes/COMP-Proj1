@@ -20,6 +20,7 @@ public:
   void visit(WhileStatement*);
   void visit(ReturnStatement*);
   void visit(FCallStatement*);
+  void visit(ForStatement*);
 
   int visit(BinaryExp* e);
   int visit(NumberExp* e);

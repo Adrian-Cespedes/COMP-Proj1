@@ -52,6 +52,7 @@ public:
   void visit(WhileStatement*);
   void visit(ReturnStatement* e);
   void visit(FCallStatement* e);
+  void visit(ForStatement* e);
   
   ImpType visit(BinaryExp* e);
   ImpType visit(NumberExp* e);

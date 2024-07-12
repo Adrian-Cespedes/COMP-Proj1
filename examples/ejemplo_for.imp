@@ -12,6 +12,9 @@ fun void main()
         nt = z + xd;
         print(nt)
     endfor;
+    for z in (y, x) do
+        print(x)
+    endfor;
     print(z);
     return ()
 endfun

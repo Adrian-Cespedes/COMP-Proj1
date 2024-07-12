@@ -276,6 +276,24 @@ void ImpTypeChecker::visit(FCallStatement* s) {
     return;
 }
 
+void ImpTypeChecker::visit(ForStatement* s) {
+    env.add_level();
+    env.add_var(s->id, inttype);
+
+    ImpType type_start = s->start->accept(this);
+    ImpType type_end = s->end->accept(this);
+    if (!type_start.match(inttype) || !type_end.match(inttype)) {
+        cout << "Tipos en For deben de ser int" << endl;
+        exit(0);
+    }
+
+    s->body->accept(this);
+
+    env.remove_level();
+
+    return;
+} 
+
 ImpType ImpTypeChecker::visit(BinaryExp* e) {
     ImpType t1 = e->left->accept(this);
     ImpType t2 = e->right->accept(this);

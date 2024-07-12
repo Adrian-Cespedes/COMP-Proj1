@@ -2,12 +2,12 @@
 
 #include "imp_parser.hh"
 
-const char* Token::token_names[32] = {
-    "LPAREN", "RPAREN", "PLUS",     "MINUS", "MULT", "DIV",   "EXP",
-    "LT",     "LTEQ",   "EQ",       "NUM",   "ID",   "PRINT", "SEMICOLON",
-    "COMMA",  "ASSIGN", "CONDEXP",  "IF",    "THEN", "ELSE",  "ENDIF",
-    "WHILE",  "DO",     "ENDWHILE", "ERR",   "END",  "VAR",   "RETURN",
-    "FUN",    "ENDFUN", "TRUE",     "FALSE"};
+const char* Token::token_names[35] = {
+    "LPAREN", "RPAREN", "PLUS",     "MINUS", "MULT",   "DIV",    "EXP",
+    "LT",     "LTEQ",   "EQ",       "NUM",   "ID",     "PRINT",  "SEMICOLON",
+    "COMMA",  "ASSIGN", "CONDEXP",  "IF",    "THEN",   "ELSE",   "ENDIF",
+    "WHILE",  "DO",     "ENDWHILE", "FOR",   "IN",     "ENDFOR", "ERR",
+    "END",    "VAR",    "RETURN",   "FUN",   "ENDFUN", "TRUE",   "FALSE"};
 
 Token::Token(Type type) : type(type) {
     lexema = "";
@@ -38,6 +38,9 @@ Scanner::Scanner(string s) : input(s), first(0), current(0) {
     reserved["while"] = Token::WHILE;
     reserved["do"] = Token::DO;
     reserved["endwhile"] = Token::ENDWHILE;
+    reserved["for"] = Token::FOR;
+    reserved["in"] = Token::IN;
+    reserved["endfor"] = Token::ENDFOR;
     reserved["var"] = Token::VAR;
     reserved["return"] = Token::RETURN;
     reserved["fun"] = Token::FUN;
@@ -397,6 +400,27 @@ Stm* Parser::parseStatement() {
         if (!match(Token::ENDWHILE))
             parserError("Esperaba 'endwhile'");
         s = new WhileStatement(e, tb);
+    } else if (match(Token::FOR)) {
+        if (!match(Token::ID))
+            parserError("Esperaba 'id'");
+        string id = previous->lexema;
+        if (!match(Token::IN))
+            parserError("Esperaba 'in'");
+        Exp *start, *end;
+        if (!match(Token::LPAREN))
+            parserError("Esperaba 'lparen'");
+        start = parseCExp();
+        if (!match(Token::COMMA))
+            parserError("Esperaba 'comma'");
+        end = parseCExp();
+        if (!match(Token::RPAREN))
+            parserError("Esperaba 'rparen'");
+        if (!match(Token::DO))
+            parserError("Esperaba 'do'");
+        Body* body = parseBody();
+        if (!match(Token::ENDFOR))
+            parserError("Esperaba 'endfor'");
+        s = new ForStatement(id, start, end, body);
     } else if (match(Token::RETURN)) {
         if (!match(Token::LPAREN))
             parserError("Esperaba 'lparen'");

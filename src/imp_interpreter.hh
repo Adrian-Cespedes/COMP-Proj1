@@ -31,6 +31,7 @@ public:
   void visit(WhileStatement*);
   void visit(ReturnStatement* e); // new
   void visit(FCallStatement* e); // new
+  void visit(ForStatement* e); // new
   
   ImpValue visit(BinaryExp* e);
   ImpValue visit(NumberExp* e);

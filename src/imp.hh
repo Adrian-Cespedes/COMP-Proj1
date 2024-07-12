@@ -176,6 +176,18 @@ class FCallStatement : public Stm {
     ~FCallStatement();
 };
 
+class ForStatement : public Stm {
+    public:
+    string id;
+    Exp *start, *end;
+    Body *body;
+    ForStatement(string id, Exp* start, Exp* end, Body* body);
+    void accept(ImpVisitor* v);
+    void accept(ImpValueVisitor* v);
+    void accept(TypeVisitor* v);
+    ~ForStatement();
+};
+
 
 class StatementList {
 public:

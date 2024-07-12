@@ -252,6 +252,64 @@ void ImpCodeGen::visit(FCallStatement* s) {
     return;
 }
 
+void ImpCodeGen::visit(ForStatement* s) {
+    string l1 = next_label();
+    string l2 = next_label();
+
+    int temp_dir = current_dir;
+    direcciones.add_level();
+
+    // memoria para el iterador y el tope
+    codegen(nolabel, "alloc", 2);
+    current_dir += 2;
+
+    VarEntry iter_entry;
+    iter_entry.dir = current_dir - 1;
+    iter_entry.is_global = false;
+    direcciones.add_var(s->id, iter_entry);
+
+    string end_id = "_" + s->id + "_end";
+    VarEntry end_entry;
+    end_entry.dir = current_dir;
+    end_entry.is_global = false;
+    direcciones.add_var(end_id, end_entry);
+
+    // inicializar iterador y tope
+    s->start->accept(this);
+    codegen(nolabel, "storer", direcciones.lookup(s->id).dir);
+    s->end->accept(this);
+    codegen(nolabel, "storer", direcciones.lookup(end_id).dir);
+
+    // bucle
+    codegen(l1, "skip");
+
+    // cond check
+    codegen(nolabel, "loadr", direcciones.lookup(s->id).dir);
+    codegen(nolabel, "loadr", direcciones.lookup(end_id).dir);
+    codegen(nolabel, "le");
+    codegen(nolabel, "jmpz", l2);
+
+    s->body->accept(this);
+
+    // incrementar iterador por 1
+    codegen(nolabel, "loadr", direcciones.lookup(s->id).dir);
+    codegen(nolabel, "push", 1);
+    codegen(nolabel, "add");
+    codegen(nolabel, "storer", direcciones.lookup(s->id).dir);
+
+    codegen(nolabel, "goto", l1);
+
+    // fin del bucle y limpiar memoria
+    codegen(l2, "skip");
+    codegen(nolabel, "pop");
+    codegen(nolabel, "pop");
+
+    direcciones.remove_level();
+
+    current_dir = temp_dir;
+    return;
+}
+
 int ImpCodeGen::visit(BinaryExp* e) {
     e->left->accept(this);
     e->right->accept(this);

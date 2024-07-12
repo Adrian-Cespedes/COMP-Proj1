@@ -134,6 +134,7 @@ IfStatement::IfStatement(Exp* c,Body *tb, Body* fb):cond(c),tbody(tb), fbody(fb)
 WhileStatement::WhileStatement(Exp* c,Body *b):cond(c),body(b) { }
 ReturnStatement::ReturnStatement(Exp* e):e(e) { }
 FCallStatement::FCallStatement(string fname, list<Exp*> args):fname(fname), args(args) { }
+ForStatement::ForStatement(string id, Exp* start, Exp* end, Body* body):id(id), start(start), end(end), body(body) { }
 
 StatementList::StatementList():slist() {}
 VarDec::VarDec(string type, list<string> vars):type(type), vars(vars) {}
@@ -152,6 +153,7 @@ ReturnStatement::~ReturnStatement() { delete e; }
 FCallStatement::~FCallStatement(){
   while (!args.empty()) { delete args.front();  ; args.pop_front();  }
 }
+ForStatement::~ForStatement() { delete start; delete end; delete body; }
 
 StatementList::~StatementList() { }
 VarDec::~VarDec() { }
@@ -183,6 +185,10 @@ void ReturnStatement::accept(ImpVisitor* v) {
 
 void FCallStatement::accept(ImpVisitor* v) {
   return v->visit(this);
+}
+
+void ForStatement::accept(ImpVisitor* v) {
+    return v->visit(this);
 }
 
 void StatementList::add(Stm* s) { slist.push_back(s);  }
@@ -245,6 +251,10 @@ void FCallStatement::accept(ImpValueVisitor* v) {
   return v->visit(this);
 }
 
+void ForStatement::accept(ImpValueVisitor* v) {
+    return v->visit(this);
+}
+
 
 void StatementList::accept(ImpValueVisitor* v) {
   return v->visit(this);
@@ -298,6 +308,10 @@ void ReturnStatement::accept(TypeVisitor* v) {
 
 void FCallStatement::accept(TypeVisitor* v) {
   return v->visit(this);
+}
+
+void ForStatement::accept(TypeVisitor* v) {
+    return v->visit(this);
 }
 
 
