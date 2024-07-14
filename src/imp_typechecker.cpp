@@ -288,14 +288,18 @@ void ImpTypeChecker::visit(ForStatement* s) {
     if (dir > max_dir)
         max_dir = dir;
 
+    // cada visit incrementa sp en 1
     ImpType type_start = s->start->accept(this);
     ImpType type_end = s->end->accept(this);
+    // sp += 2
+    // esto simula el incremento de sp durante el cond check y durante el incremento del iterador
+
     if (!type_start.match(inttype) || !type_end.match(inttype)) {
         cout << "Tipos en For deben de ser int" << endl;
         exit(0);
     }
 
-    sp_incr(2);
+    // restauramos sp para que no afecte al body
     sp_decr(2);
 
     s->body->accept(this);
