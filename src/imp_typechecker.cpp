@@ -295,6 +295,9 @@ void ImpTypeChecker::visit(ForStatement* s) {
         exit(0);
     }
 
+    sp_incr(2);
+    sp_decr(2);
+
     s->body->accept(this);
 
     env.remove_level();

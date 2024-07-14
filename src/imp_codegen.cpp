@@ -124,9 +124,10 @@ void ImpCodeGen::visit(FunDec* fd) {
     VarEntry ventry;
 
     // agregar direcciones de argumentos
+    int i = 0;
     for (auto it = fd->vars.begin(); it != fd->vars.end(); ++it) {
-        current_dir++;
-        ventry.dir = current_dir - (m + 3);
+        i++;
+        ventry.dir = i - (m + 3);
         ventry.is_global = false;
         direcciones.add_var(*it, ventry);
     }
@@ -146,7 +147,6 @@ void ImpCodeGen::visit(FunDec* fd) {
 
     // cout << fd->fname << " " << current_dir << endl;
 
-    current_dir = 0;
     fd->body->accept(this);
     //  -- sacar comentarios para generar codigo del cuerpo
 
